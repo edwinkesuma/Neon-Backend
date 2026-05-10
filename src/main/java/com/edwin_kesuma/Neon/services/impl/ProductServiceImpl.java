@@ -64,7 +64,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public ResponseProductDTO addProduct(RequestCreateProductDTO productDTO, List<MultipartFile> images) throws BadRequestException {
+    public ResponseProductDTO addProduct(RequestCreateProductDTO productDTO,
+                                         List<MultipartFile> images) throws BadRequestException {
         Category
                 selectedCategory =
                 categoryRepository.findById(productDTO.categoryId())
@@ -117,7 +118,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public ResponseProductDTO updateProduct(UUID productId, RequestUpdateProductDTO productDTO, List<MultipartFile> images) throws BadRequestException {
+    public ResponseProductDTO updateProduct(UUID productId,
+                                            RequestUpdateProductDTO productDTO,
+                                            List<MultipartFile> images) throws BadRequestException {
         Product
                 productFromDb =
                 productRepository.findById(productId)
@@ -203,7 +206,7 @@ public class ProductServiceImpl implements ProductService {
                 sortOrder.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
 
         Pageable page = PageRequest.of(pageNumber, pageSize, sortByAndOrder);
-        Page<Product> pageProducts = productRepository.findAll(page);
+        Page<Product> pageProducts = productRepository.findByCategory(category, page);
 
         List<Product> products = pageProducts.getContent();
         List<ResponseProductDTO> responseProductDTOS = products.stream().map(productMapper::toDto).toList();
