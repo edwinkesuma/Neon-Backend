@@ -180,6 +180,10 @@ public class ProductServiceImpl implements ProductService {
                 productRepository.findById(productId)
                         .orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
 
+        for (ProductImage oldImage : product.getImages()) {
+            cloudinaryService.deleteFile(oldImage.getPublicId());
+        }
+
         productRepository.delete(product);
     }
 
