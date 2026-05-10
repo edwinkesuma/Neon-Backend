@@ -4,8 +4,6 @@ import jakarta.validation.constraints.NotBlank;
 
 public record RequestUpdateCategoryDTO(
         @NotBlank
-        String name,
-
-        String image
+        String name
 ) {
 }

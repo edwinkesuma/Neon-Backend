@@ -26,7 +26,10 @@ public class Category {
     @Column(nullable = false, unique = true)
     private String normalizedCategoryName;
 
-    private String image = "";
+    @Column(nullable = false)
+    private String imageUrl = "";
+
+    private String publicId;
 
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
     private List<Product> products = new ArrayList<>();
