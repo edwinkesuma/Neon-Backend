@@ -1,9 +1,6 @@
 package com.edwin_kesuma.Neon.services;
 
-import com.edwin_kesuma.Neon.domain.dtos.product.RequestCreateProductDTO;
-import com.edwin_kesuma.Neon.domain.dtos.product.RequestUpdateProductDTO;
-import com.edwin_kesuma.Neon.domain.dtos.product.ResponseListProductDTO;
-import com.edwin_kesuma.Neon.domain.dtos.product.ResponseProductDTO;
+import com.edwin_kesuma.Neon.domain.dtos.product.*;
 import jakarta.validation.Valid;
 import org.apache.coyote.BadRequestException;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -29,4 +26,6 @@ public interface ProductService {
                                                 String sortBy,
                                                 String sortOrder,
                                                 UUID categoryId);
+
+    ResponseProductDetailsDTO getProductDetails(UUID productId);
 }

@@ -2,6 +2,7 @@ package com.edwin_kesuma.Neon.mappers;
 
 import com.edwin_kesuma.Neon.domain.dtos.product.RequestCreateProductDTO;
 import com.edwin_kesuma.Neon.domain.dtos.product.ResponseProductDTO;
+import com.edwin_kesuma.Neon.domain.dtos.product.ResponseProductDetailsDTO;
 import com.edwin_kesuma.Neon.domain.entities.Product;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -12,7 +13,9 @@ public interface ProductMapper {
     Product toEntity(ResponseProductDTO responseProductDTO);
 
     @Mapping(target = "image", expression = "java(getImage(product))")
-    ResponseProductDTO toDto(Product product);
+    ResponseProductDTO productToDto(Product product);
+
+    ResponseProductDetailsDTO productDetailsToDTO(Product product);
 
     Product createProductDtoToEntity(RequestCreateProductDTO requestCreateProductDTO);
 

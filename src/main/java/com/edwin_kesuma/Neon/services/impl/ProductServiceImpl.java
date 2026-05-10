@@ -1,10 +1,7 @@
 package com.edwin_kesuma.Neon.services.impl;
 
 import com.edwin_kesuma.Neon.domain.dtos.ResponseCloudinaryUploadDTO;
-import com.edwin_kesuma.Neon.domain.dtos.product.RequestCreateProductDTO;
-import com.edwin_kesuma.Neon.domain.dtos.product.RequestUpdateProductDTO;
-import com.edwin_kesuma.Neon.domain.dtos.product.ResponseListProductDTO;
-import com.edwin_kesuma.Neon.domain.dtos.product.ResponseProductDTO;
+import com.edwin_kesuma.Neon.domain.dtos.product.*;
 import com.edwin_kesuma.Neon.domain.entities.Category;
 import com.edwin_kesuma.Neon.domain.entities.Product;
 import com.edwin_kesuma.Neon.domain.entities.ProductImage;
@@ -52,7 +49,7 @@ public class ProductServiceImpl implements ProductService {
         Page<Product> pageProducts = productRepository.findAll(pageDetails);
 
         List<Product> products = pageProducts.getContent();
-        List<ResponseProductDTO> responseProductDTOS = products.stream().map(productMapper::toDto).toList();
+        List<ResponseProductDTO> responseProductDTOS = products.stream().map(productMapper::productToDto).toList();
 
         return new ResponseListProductDTO(responseProductDTOS,
                 pageProducts.getNumber(),
@@ -113,7 +110,7 @@ public class ProductServiceImpl implements ProductService {
 
         Product saved = productRepository.save(product);
 
-        return productMapper.toDto(saved);
+        return productMapper.productToDto(saved);
     }
 
     @Override
@@ -172,7 +169,7 @@ public class ProductServiceImpl implements ProductService {
         }
 
         Product updatedProduct = productRepository.save(productFromDb);
-        return productMapper.toDto(updatedProduct);
+        return productMapper.productToDto(updatedProduct);
     }
 
     @Override
@@ -209,7 +206,7 @@ public class ProductServiceImpl implements ProductService {
         Page<Product> pageProducts = productRepository.findByCategory(category, page);
 
         List<Product> products = pageProducts.getContent();
-        List<ResponseProductDTO> responseProductDTOS = products.stream().map(productMapper::toDto).toList();
+        List<ResponseProductDTO> responseProductDTOS = products.stream().map(productMapper::productToDto).toList();
 
         return new ResponseListProductDTO(responseProductDTOS,
                 pageProducts.getNumber(),
@@ -217,5 +214,13 @@ public class ProductServiceImpl implements ProductService {
                 pageProducts.getTotalElements(),
                 pageProducts.getTotalPages(),
                 pageProducts.isLast());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ResponseProductDetailsDTO getProductDetails(UUID productId) {
+        Product product = productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
+
+        return productMapper.productDetailsToDTO(product);
     }
 }

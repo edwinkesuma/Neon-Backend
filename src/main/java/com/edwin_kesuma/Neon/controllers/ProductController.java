@@ -1,10 +1,7 @@
 package com.edwin_kesuma.Neon.controllers;
 
 import com.edwin_kesuma.Neon.config.AppConstans;
-import com.edwin_kesuma.Neon.domain.dtos.product.RequestCreateProductDTO;
-import com.edwin_kesuma.Neon.domain.dtos.product.RequestUpdateProductDTO;
-import com.edwin_kesuma.Neon.domain.dtos.product.ResponseListProductDTO;
-import com.edwin_kesuma.Neon.domain.dtos.product.ResponseProductDTO;
+import com.edwin_kesuma.Neon.domain.dtos.product.*;
 import com.edwin_kesuma.Neon.services.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
@@ -40,7 +37,7 @@ public class ProductController {
         return new ResponseEntity<>(productResponse, HttpStatus.OK);
     }
 
-    @GetMapping("{categoryId}")
+    @GetMapping("category/{categoryId}")
     public ResponseEntity<ResponseListProductDTO> getProductsByCategory(
             @RequestParam(name = "pageNumber", defaultValue = AppConstans.PAGE_NUMBER, required = false) Integer pageNumber,
             @RequestParam(name = "pageSize", defaultValue = AppConstans.PAGE_SIZE, required = false) Integer pageSize,
@@ -53,6 +50,13 @@ public class ProductController {
                 productService.getProductByCategory(pageNumber, pageSize, sortBy, sortOrder, categoryId);
 
         return new ResponseEntity<>(productResponse, HttpStatus.OK);
+    }
+
+    @GetMapping("{productId}")
+    public ResponseEntity<ResponseProductDetailsDTO> getProductDetails(@PathVariable UUID productId) {
+        ResponseProductDetailsDTO response = productService.getProductDetails(productId);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
