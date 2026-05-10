@@ -1,21 +1,29 @@
 package com.edwin_kesuma.Neon.services.impl;
 
-import com.edwin_kesuma.Neon.domain.dtos.product.*;
+import com.edwin_kesuma.Neon.domain.dtos.ResponseCloudinaryUploadDTO;
+import com.edwin_kesuma.Neon.domain.dtos.product.RequestCreateProductDTO;
+import com.edwin_kesuma.Neon.domain.dtos.product.RequestUpdateProductDTO;
+import com.edwin_kesuma.Neon.domain.dtos.product.ResponseListProductDTO;
+import com.edwin_kesuma.Neon.domain.dtos.product.ResponseProductDTO;
 import com.edwin_kesuma.Neon.domain.entities.Category;
 import com.edwin_kesuma.Neon.domain.entities.Product;
+import com.edwin_kesuma.Neon.domain.entities.ProductImage;
 import com.edwin_kesuma.Neon.exceptions.DuplicateResourceException;
 import com.edwin_kesuma.Neon.exceptions.ResourceNotFoundException;
 import com.edwin_kesuma.Neon.mappers.ProductMapper;
 import com.edwin_kesuma.Neon.repositories.CategoryRepository;
 import com.edwin_kesuma.Neon.repositories.ProductRepository;
+import com.edwin_kesuma.Neon.services.CloudinaryService;
 import com.edwin_kesuma.Neon.services.ProductService;
 import lombok.AllArgsConstructor;
+import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,13 +32,18 @@ import java.util.UUID;
 @Service
 @AllArgsConstructor
 public class ProductServiceImpl implements ProductService {
+
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final ProductMapper productMapper;
+    private final CloudinaryService cloudinaryService;
 
     @Override
     @Transactional(readOnly = true)
-    public ResponseListProductDTO getAllProducts(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder) {
+    public ResponseListProductDTO getAllProducts(Integer pageNumber,
+                                                 Integer pageSize,
+                                                 String sortBy,
+                                                 String sortOrder) {
         Sort
                 sortByAndOrder =
                 sortOrder.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
@@ -51,7 +64,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public ResponseProductDTO addProduct(RequestCreateProductDTO productDTO) {
+    public ResponseProductDTO addProduct(RequestCreateProductDTO productDTO, List<MultipartFile> images) throws BadRequestException {
         Category
                 selectedCategory =
                 categoryRepository.findById(productDTO.categoryId())
@@ -68,9 +81,34 @@ public class ProductServiceImpl implements ProductService {
             throw new DuplicateResourceException("Product", "name", productDTO.name());
         }
 
+        if (images == null || images.isEmpty()) {
+            throw new BadRequestException("Product image is required");
+        }
+
+
         Product product = productMapper.createProductDtoToEntity(productDTO);
-        product.setImages(new ArrayList<>());
         product.setCategory(selectedCategory);
+
+        List<ProductImage> productImages = new ArrayList<>();
+
+        for (MultipartFile file : images) {
+
+            if (!file.getContentType().startsWith("image/")) {
+                throw new BadRequestException("Invalid image file");
+            }
+
+            ResponseCloudinaryUploadDTO uploadedImage = cloudinaryService.uploadFile(file, "products");
+
+            ProductImage productImage = new ProductImage();
+
+            productImage.setImageUrl(uploadedImage.imageUrl());
+            productImage.setPublicId(uploadedImage.publicId());
+            productImage.setProduct(product);
+
+            productImages.add(productImage);
+        }
+
+        product.setImages(productImages);
 
         Product saved = productRepository.save(product);
 
@@ -79,7 +117,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public ResponseProductDTO updateProduct(UUID productId, RequestUpdateProductDTO productDTO) {
+    public ResponseProductDTO updateProduct(UUID productId, RequestUpdateProductDTO productDTO, List<MultipartFile> images) throws BadRequestException {
         Product
                 productFromDb =
                 productRepository.findById(productId)
@@ -90,13 +128,45 @@ public class ProductServiceImpl implements ProductService {
                         "Category", "categoryId", productDTO.categoryId()
                 ));
 
-
         productFromDb.setName(productDTO.name());
         productFromDb.setDescription(productDTO.description());
         productFromDb.setPrice(productDTO.price());
         productFromDb.setDiscountPercentage(productDTO.discountPercentage());
         productFromDb.setStock(productDTO.stock());
         productFromDb.setCategory(category);
+
+        if (images != null && !images.isEmpty()) {
+
+            // delete old image at cloudinary
+            for (ProductImage oldImage : productFromDb.getImages()) {
+                cloudinaryService.deleteFile(oldImage.getPublicId());
+            }
+
+            // delete old images from db
+            productFromDb.getImages().clear();
+
+            List<ProductImage> newImages = new ArrayList<>();
+
+            for (MultipartFile file : images) {
+
+                if (!file.getContentType().startsWith("image/")) {
+                    throw new BadRequestException("Invalid image file");
+                }
+
+                ResponseCloudinaryUploadDTO uploadedImage =
+                        cloudinaryService.uploadFile(file, "products");
+
+                ProductImage productImage = new ProductImage();
+
+                productImage.setImageUrl(uploadedImage.imageUrl());
+                productImage.setPublicId(uploadedImage.publicId());
+                productImage.setProduct(productFromDb);
+
+                newImages.add(productImage);
+            }
+
+            productFromDb.getImages().addAll(newImages);
+        }
 
         Product updatedProduct = productRepository.save(productFromDb);
         return productMapper.toDto(updatedProduct);
@@ -119,9 +189,14 @@ public class ProductServiceImpl implements ProductService {
                                                        String sortBy,
                                                        String sortOrder,
                                                        UUID categoryId) {
-        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", categoryId));
+        Category
+                category =
+                categoryRepository.findById(categoryId)
+                        .orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", categoryId));
 
-        Sort sortByAndOrder = sortOrder.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Sort
+                sortByAndOrder =
+                sortOrder.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
 
         Pageable page = PageRequest.of(pageNumber, pageSize, sortByAndOrder);
         Page<Product> pageProducts = productRepository.findAll(page);
