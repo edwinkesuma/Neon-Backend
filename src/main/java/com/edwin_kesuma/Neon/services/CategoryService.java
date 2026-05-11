@@ -21,4 +21,6 @@ public interface CategoryService {
                                        MultipartFile image) throws BadRequestException;
 
     void deleteCategory(UUID categoryId) throws BadRequestException;
+
+    ResponseCategoryDTO getCategory(UUID categoryId);
 }

@@ -14,7 +14,6 @@ import com.edwin_kesuma.Neon.repositories.ProductRepository;
 import com.edwin_kesuma.Neon.services.CategoryService;
 import com.edwin_kesuma.Neon.services.CloudinaryService;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -152,5 +151,15 @@ public class CategoryServiceImpl implements CategoryService {
         }
 
         categoryRepository.delete(category);
+    }
+
+    @Override
+    public ResponseCategoryDTO getCategory(UUID categoryId) {
+        Category
+                category =
+                categoryRepository.findById(categoryId)
+                        .orElseThrow(() -> new ResourceNotFoundException("Category", "id", categoryId));
+
+        return categoryMapper.toDto(category);
     }
 }

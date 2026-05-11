@@ -33,6 +33,13 @@ public class CategoryController {
                 HttpStatus.OK);
     }
 
+    @GetMapping("/{categoryId}")
+    public ResponseEntity<ResponseCategoryDTO> getDetailCategory(@PathVariable UUID categoryId) {
+        ResponseCategoryDTO response = categoryService.getCategory(categoryId);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
     @PostMapping
     public ResponseEntity<ResponseCategoryDTO> createCategory(@Valid @RequestPart("category") RequestCreateCategoryDTO categoryDTO,
                                                               @RequestPart("image") MultipartFile image
