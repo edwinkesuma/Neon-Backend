@@ -1,10 +1,7 @@
 package com.edwin_kesuma.Neon.controllers;
 
 import com.edwin_kesuma.Neon.config.AppConstans;
-import com.edwin_kesuma.Neon.domain.dtos.category.RequestCreateCategoryDTO;
-import com.edwin_kesuma.Neon.domain.dtos.category.RequestUpdateCategoryDTO;
-import com.edwin_kesuma.Neon.domain.dtos.category.ResponseCategoryDTO;
-import com.edwin_kesuma.Neon.domain.dtos.category.ResponseListCategoryDTO;
+import com.edwin_kesuma.Neon.domain.dtos.category.*;
 import com.edwin_kesuma.Neon.services.CategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -31,6 +29,11 @@ public class CategoryController {
 
         return new ResponseEntity<>(categoryService.getAllCategories(pageNumber, pageSize, sortBy, sortOrder),
                 HttpStatus.OK);
+    }
+
+    @GetMapping("/simple")
+    public ResponseEntity<List<ResponseSimpleCategoryDTO>> getSimpleCategories() {
+        return new ResponseEntity<>(categoryService.getSimpleCategories(), HttpStatus.OK);
     }
 
     @GetMapping("/{categoryId}")

@@ -2,6 +2,7 @@ package com.edwin_kesuma.Neon.mappers;
 
 import com.edwin_kesuma.Neon.domain.dtos.category.RequestCreateCategoryDTO;
 import com.edwin_kesuma.Neon.domain.dtos.category.ResponseCategoryDTO;
+import com.edwin_kesuma.Neon.domain.dtos.category.ResponseSimpleCategoryDTO;
 import com.edwin_kesuma.Neon.domain.entities.Category;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
@@ -11,6 +12,8 @@ public interface CategoryMapper {
     Category toEntity(ResponseCategoryDTO dto);
 
     ResponseCategoryDTO toDto(Category category);
+
+    ResponseSimpleCategoryDTO toSimpleCategoryDto(Category category);
 
     Category createCategoryDtoToEntity(RequestCreateCategoryDTO createRequestCategoryDTO);
 

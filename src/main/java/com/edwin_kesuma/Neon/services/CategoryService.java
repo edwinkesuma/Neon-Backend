@@ -1,13 +1,11 @@
 package com.edwin_kesuma.Neon.services;
 
-import com.edwin_kesuma.Neon.domain.dtos.category.RequestCreateCategoryDTO;
-import com.edwin_kesuma.Neon.domain.dtos.category.RequestUpdateCategoryDTO;
-import com.edwin_kesuma.Neon.domain.dtos.category.ResponseCategoryDTO;
-import com.edwin_kesuma.Neon.domain.dtos.category.ResponseListCategoryDTO;
+import com.edwin_kesuma.Neon.domain.dtos.category.*;
 import jakarta.validation.Valid;
 import org.apache.coyote.BadRequestException;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface CategoryService {
@@ -23,4 +21,6 @@ public interface CategoryService {
     void deleteCategory(UUID categoryId) throws BadRequestException;
 
     ResponseCategoryDTO getCategory(UUID categoryId);
+
+    List<ResponseSimpleCategoryDTO> getSimpleCategories();
 }

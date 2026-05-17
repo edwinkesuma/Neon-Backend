@@ -1,10 +1,7 @@
 package com.edwin_kesuma.Neon.services.impl;
 
 import com.edwin_kesuma.Neon.domain.dtos.ResponseCloudinaryUploadDTO;
-import com.edwin_kesuma.Neon.domain.dtos.category.RequestCreateCategoryDTO;
-import com.edwin_kesuma.Neon.domain.dtos.category.RequestUpdateCategoryDTO;
-import com.edwin_kesuma.Neon.domain.dtos.category.ResponseCategoryDTO;
-import com.edwin_kesuma.Neon.domain.dtos.category.ResponseListCategoryDTO;
+import com.edwin_kesuma.Neon.domain.dtos.category.*;
 import com.edwin_kesuma.Neon.domain.entities.Category;
 import com.edwin_kesuma.Neon.exceptions.DuplicateResourceException;
 import com.edwin_kesuma.Neon.exceptions.ResourceNotFoundException;
@@ -161,5 +158,12 @@ public class CategoryServiceImpl implements CategoryService {
                         .orElseThrow(() -> new ResourceNotFoundException("Category", "id", categoryId));
 
         return categoryMapper.toDto(category);
+    }
+
+    @Override
+    public List<ResponseSimpleCategoryDTO> getSimpleCategories() {
+        List<Category> categories = categoryRepository.findAll();
+
+        return categories.stream().map(categoryMapper::toSimpleCategoryDto).toList();
     }
 }
