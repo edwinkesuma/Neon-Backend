@@ -1,6 +1,7 @@
 package com.edwin_kesuma.Neon.domain.dtos.product;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 
 public record RequestUpdateProductDTO(
@@ -14,6 +15,8 @@ public record RequestUpdateProductDTO(
 
         Integer stock,
 
-        UUID categoryId
+        UUID categoryId,
+
+        List<String> existingImages
 ) {
 }

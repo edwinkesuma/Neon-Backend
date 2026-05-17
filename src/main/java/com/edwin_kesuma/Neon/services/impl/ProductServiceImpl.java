@@ -135,15 +135,25 @@ public class ProductServiceImpl implements ProductService {
         productFromDb.setStock(productDTO.stock());
         productFromDb.setCategory(category);
 
+        List<String> existingImageUrls =
+                productDTO.existingImages() != null
+                        ? productDTO.existingImages()
+                        : new ArrayList<>();
+
+        List<ProductImage> imagesToRemove =
+                productFromDb.getImages()
+                        .stream()
+                        .filter(image ->
+                                !existingImageUrls.contains(image.getImageUrl()))
+                        .toList();
+
+        for (ProductImage image : imagesToRemove) {
+            cloudinaryService.deleteFile(image.getPublicId());
+        }
+
+        productFromDb.getImages().removeAll(imagesToRemove);
+
         if (images != null && !images.isEmpty()) {
-
-            // delete old image at cloudinary
-            for (ProductImage oldImage : productFromDb.getImages()) {
-                cloudinaryService.deleteFile(oldImage.getPublicId());
-            }
-
-            // delete old images from db
-            productFromDb.getImages().clear();
 
             List<ProductImage> newImages = new ArrayList<>();
 
@@ -166,6 +176,10 @@ public class ProductServiceImpl implements ProductService {
             }
 
             productFromDb.getImages().addAll(newImages);
+        }
+
+        if (productFromDb.getImages().isEmpty()) {
+            throw new BadRequestException("Product must have at least 1 image");
         }
 
         Product updatedProduct = productRepository.save(productFromDb);
@@ -219,7 +233,10 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional(readOnly = true)
     public ResponseProductDetailsDTO getProductDetails(UUID productId) {
-        Product product = productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
+        Product
+                product =
+                productRepository.findById(productId)
+                        .orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
 
         return productMapper.productDetailsToDTO(product);
     }

@@ -69,7 +69,7 @@ public class ProductController {
 
     @PutMapping("/{productId}")
     public ResponseEntity<ResponseProductDTO> updateProduct(@RequestPart("product") RequestUpdateProductDTO productDTO,
-                                                            @RequestPart("images") List<MultipartFile> images,
+                                                            @RequestPart(value = "images", required = false) List<MultipartFile> images,
                                                             @PathVariable UUID productId) throws BadRequestException {
         ResponseProductDTO updatedProduct = productService.updateProduct(productId, productDTO, images);
 
