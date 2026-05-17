@@ -13,6 +13,7 @@ public record ResponseProductDetailsDTO(
         List<ProductImage> images,
         Integer stock,
         BigDecimal price,
-        BigDecimal discountPercentage
+        BigDecimal discountPercentage,
+        UUID categoryId
 ) {
 }

@@ -15,6 +15,7 @@ public interface ProductMapper {
     @Mapping(target = "image", expression = "java(getImage(product))")
     ResponseProductDTO productToDto(Product product);
 
+    @Mapping(source = "category.id", target = "categoryId")
     ResponseProductDetailsDTO productDetailsToDTO(Product product);
 
     Product createProductDtoToEntity(RequestCreateProductDTO requestCreateProductDTO);
