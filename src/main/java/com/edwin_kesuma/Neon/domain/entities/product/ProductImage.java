@@ -1,4 +1,4 @@
-package com.edwin_kesuma.Neon.domain.entities;
+package com.edwin_kesuma.Neon.domain.entities.product;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;

@@ -2,7 +2,7 @@ package com.edwin_kesuma.Neon.services.impl;
 
 import com.edwin_kesuma.Neon.domain.dtos.ResponseCloudinaryUploadDTO;
 import com.edwin_kesuma.Neon.domain.dtos.category.*;
-import com.edwin_kesuma.Neon.domain.entities.Category;
+import com.edwin_kesuma.Neon.domain.entities.category.Category;
 import com.edwin_kesuma.Neon.exceptions.DuplicateResourceException;
 import com.edwin_kesuma.Neon.exceptions.ResourceNotFoundException;
 import com.edwin_kesuma.Neon.mappers.CategoryMapper;

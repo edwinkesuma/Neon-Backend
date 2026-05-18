@@ -1,5 +1,6 @@
-package com.edwin_kesuma.Neon.domain.entities;
+package com.edwin_kesuma.Neon.domain.entities.user;
 
+import com.edwin_kesuma.Neon.domain.entities.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 

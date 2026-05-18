@@ -2,9 +2,9 @@ package com.edwin_kesuma.Neon.services.impl;
 
 import com.edwin_kesuma.Neon.domain.dtos.ResponseCloudinaryUploadDTO;
 import com.edwin_kesuma.Neon.domain.dtos.product.*;
-import com.edwin_kesuma.Neon.domain.entities.Category;
-import com.edwin_kesuma.Neon.domain.entities.Product;
-import com.edwin_kesuma.Neon.domain.entities.ProductImage;
+import com.edwin_kesuma.Neon.domain.entities.category.Category;
+import com.edwin_kesuma.Neon.domain.entities.product.Product;
+import com.edwin_kesuma.Neon.domain.entities.product.ProductImage;
 import com.edwin_kesuma.Neon.exceptions.DuplicateResourceException;
 import com.edwin_kesuma.Neon.exceptions.ResourceNotFoundException;
 import com.edwin_kesuma.Neon.mappers.ProductMapper;

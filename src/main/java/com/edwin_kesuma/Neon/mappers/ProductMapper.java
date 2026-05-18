@@ -3,7 +3,7 @@ package com.edwin_kesuma.Neon.mappers;
 import com.edwin_kesuma.Neon.domain.dtos.product.RequestCreateProductDTO;
 import com.edwin_kesuma.Neon.domain.dtos.product.ResponseProductDTO;
 import com.edwin_kesuma.Neon.domain.dtos.product.ResponseProductDetailsDTO;
-import com.edwin_kesuma.Neon.domain.entities.Product;
+import com.edwin_kesuma.Neon.domain.entities.product.Product;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;

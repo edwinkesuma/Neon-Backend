@@ -1,6 +1,6 @@
 package com.edwin_kesuma.Neon.domain.dtos.product;
 
-import com.edwin_kesuma.Neon.domain.entities.ProductImage;
+import com.edwin_kesuma.Neon.domain.entities.product.ProductImage;
 
 import java.math.BigDecimal;
 import java.util.List;

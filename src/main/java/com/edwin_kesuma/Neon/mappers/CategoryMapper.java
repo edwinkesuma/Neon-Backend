@@ -3,7 +3,7 @@ package com.edwin_kesuma.Neon.mappers;
 import com.edwin_kesuma.Neon.domain.dtos.category.RequestCreateCategoryDTO;
 import com.edwin_kesuma.Neon.domain.dtos.category.ResponseCategoryDTO;
 import com.edwin_kesuma.Neon.domain.dtos.category.ResponseSimpleCategoryDTO;
-import com.edwin_kesuma.Neon.domain.entities.Category;
+import com.edwin_kesuma.Neon.domain.entities.category.Category;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 

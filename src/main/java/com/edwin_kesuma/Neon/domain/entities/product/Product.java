@@ -1,22 +1,22 @@
-package com.edwin_kesuma.Neon.domain.entities;
+package com.edwin_kesuma.Neon.domain.entities.product;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.edwin_kesuma.Neon.domain.entities.category.Category;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "categories")
+@Table(name = "products")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Builder
-public class Category {
+public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -24,17 +24,23 @@ public class Category {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false, unique = true)
-    private String normalizedCategoryName;
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String description;
 
     @Column(nullable = false)
-    private String imageUrl = "";
+    private BigDecimal price;
 
-    private String publicId;
+    private BigDecimal discountPercentage;
 
-    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
-    @JsonIgnore
-    private List<Product> products = new ArrayList<>();
+    @Column(nullable = false)
+    private Integer stock;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProductImage> images;
 
     @Column(updatable = false)
     protected LocalDateTime createdAt;
@@ -46,12 +52,10 @@ public class Category {
         LocalDateTime now = LocalDateTime.now();
         createdAt = now;
         updatedAt = now;
-        normalizedCategoryName = name.trim().toLowerCase();
     }
 
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
-        normalizedCategoryName = name.trim().toLowerCase();
     }
 }

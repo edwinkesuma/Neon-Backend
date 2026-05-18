@@ -1,7 +1,7 @@
 package com.edwin_kesuma.Neon.repositories;
 
-import com.edwin_kesuma.Neon.domain.entities.Category;
-import com.edwin_kesuma.Neon.domain.entities.Product;
+import com.edwin_kesuma.Neon.domain.entities.category.Category;
+import com.edwin_kesuma.Neon.domain.entities.product.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
