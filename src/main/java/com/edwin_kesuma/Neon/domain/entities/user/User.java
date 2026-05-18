@@ -31,6 +31,10 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    private String imageUrl = "";
+
+    private String publicId;
+
     @OneToMany(mappedBy = "user")
     private List<UserAddress> addresses = new ArrayList<>();
 }
