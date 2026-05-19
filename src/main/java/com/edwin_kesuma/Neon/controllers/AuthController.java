@@ -1,6 +1,8 @@
 package com.edwin_kesuma.Neon.controllers;
 
+import com.edwin_kesuma.Neon.domain.dtos.user.RequestLoginDTO;
 import com.edwin_kesuma.Neon.domain.dtos.user.RequestRegisterDTO;
+import com.edwin_kesuma.Neon.domain.dtos.user.ResponseLoginDTO;
 import com.edwin_kesuma.Neon.services.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,6 +25,17 @@ public class AuthController {
         authService.registerUser(registerDTO);
 
         return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<ResponseLoginDTO> loginUser(@RequestBody RequestLoginDTO loginDTO) {
+        ResponseLoginDTO response = authService.loginUser(loginDTO);
+
+        if (response.user() == null && response.jwtToken() == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
 }
